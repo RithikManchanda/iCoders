@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %} blogHome {% endblock title %}
+{% block body %}
+<div class='container col-sm-8 col-sm-offset-3'>
+
+{% load static %}
+ 
+
+<div class="col-sm-12 ">
+<h1 style="color:#000000; margin-bottom:25px; text-align:center;">{{title}} Of the Blogs </h1>
+
+<link rel='stylesheet' href="{% static 'css/base.css' %}"/>
+{% for obj in objects_list %}
+<div class="card col-sm-12" >
+  <div class="card-body">
+    <h5 class="card-title"> <a href="{{obj.get_absolute_url}}">{{ obj.title }}</a>  <small style="font-size:15px">{{ obj.published}} </small></h5>
+    <div class="post-detail-item">
+    {% if obj.image %}
+    <img src="{{obj.image.url}}" class='image-responsive' style="margin-left:20px;"/> <br>
+    {% endif %}
+    <br>
+    {% if obj.user.get_full_name %}
+     <b>Author:</b> {{ obj.user.get_full_name }}<br>
+    {% endif %}
+    
+    {% if obj.draft %}<h5>staff only:Draft</h3>{% endif %} {% if obj.published > today %}<h5>Future Draft</h3>{% endif %}
+    <p class=" ">{{ obj.get_markdown|truncatechars_html:200 }}</p>
+    <a  href="{{obj.get_absolute_url}}" class="btn btn-dark" style="background-color:#000000;color:#ffffff;">View</a>
+    </div>
+  </div>
+</div>
+
+
+
+
+{% endfor %}
+<br>
+<div class="pagination" >
+    <span class="step-links">
+        {% if objects_list.has_previous %}
+            <a href="?{{page_request_variable}}=1">&laquo; first</a>
+            <a href="?{{page_request_variable}}={{ objects_list.previous_page_number }} &q={{request.GET.q}}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ objects_list.number }} of {{ objects_list.paginator.num_pages }}.
+        </span>
+
+        {% if objects_list.has_next %}
+            <a href="?{{page_request_variable}}={{ objects_list.next_page_number }} {% if request.GET.q%} &q={{request.GET.q}} {% endif %}">next</a>
+            <a href="?{{page_request_variable}}={{ objects_list.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+
+</div>
+
+
+
+ </div>
+ {% endblock body %}
+

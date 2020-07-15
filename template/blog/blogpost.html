@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags%}
+{% block title %}Blogpost Home{% endblock title %}
+
+{% block body %} 
+<div class='container col-sm-6 col-sm-offset-3'>
+{% if instance.image %}
+<img src="{{instance.image.url}}" class='image-responsive'/> <br>
+{% endif %}
+<h2>{{title}}  <small style="font-size:20px"> {% if instance.draft %} <span style='color:red;font-size:20px;'>Draft</span> {% endif %} {{  instance.published }}</small></h2>
+{% if instance.user.get_full_name %}
+<b>Author:</b> {{ instance.user.get_full_name }}<br>
+{% endif %}
+<div class="fb-like mt-4" data-href="{{ request.build_absolute_uri }}" data-width="" data-layout="standard" data-action="like" data-size="large" data-share="true"></div>
+<hr/>
+<div class='row'>
+<div class="col-sm-12">
+<div class=" post-detail-item">
+{{ instance.get_markdown }}<br>
+
+</div>
+<hr/>
+
+<div>
+<p class="lead" >Comments</p>
+<hr/>
+<form method="POST" action=" ">
+{% csrf_token %}
+{{ comment_form|crispy }}
+<input type='submit' value="Post Comment" class='btn btn-default'>
+</form>
+{% for comment in comments %}
+
+
+<blockquote class="blockquote">
+  <p class="mb-0">{{ comment.content }}</p>
+  <footer class="blockquote-footer">via  {{ comment.user }}| {{ comment.timestamp|timesince }} ago</footer>
+</blockquote>
+<hr/>
+
+{% endfor %}
+
+</div>
+</div>
+</div>
+</div>
+ {% endblock body %}
